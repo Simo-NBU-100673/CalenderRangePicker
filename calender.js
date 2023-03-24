@@ -27,13 +27,36 @@ document.addEventListener('click', function (event) {
             isCalendarOpen = false;
             console.log('Calendar closed');
 
-            if(firstClickedDate && secondClickedDate){
-                calenderInput.value = `${firstClickedDate.innerHTML} - ${secondClickedDate.innerHTML}`;
-            }
+            setValuesToInput();
         }
     }
 });
 
+function setValuesToInput(){
+    if(firstClickedDate && secondClickedDate){
+        //make the date to be in format DD/MM/YYYY and the set the value of the input field to be the two dates separated by a dash
+        calenderInput.value = `${getDateFromCell(firstClickedDate)} - ${getDateFromCell(secondClickedDate)}`;
+
+    } else if(firstClickedDate){
+        calenderInput.value = firstClickedDate;
+
+    } else {
+        calenderInput.value = '';
+    }
+}
+
+function getDateFromCell(cell){
+    let cellDate = cell.getAttribute('date');
+    const today = new Date(cellDate);
+    const day = today.getDate().toString().padStart(2, '0'); // padStart ensures 2 digits
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // add 1 to get 1-12 range
+    const year = today.getFullYear().toString();
+
+    const dateStr = `${day}/${month}/${year}`;
+    console.log(dateStr); // logs the date in "DD/MM/YYYY" format
+
+    return dateStr;
+}
 
 function init(divRoot){
     let currentDate = new Date();
@@ -129,6 +152,7 @@ function getTableCells(calendar) {
 }
 
 function createMonth(monthToCreate, calendarWrapper) {
+    console.log(monthToCreate);
     const currentDate = new Date();
     const month = new Date(monthToCreate);
     const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
@@ -143,11 +167,15 @@ function createMonth(monthToCreate, calendarWrapper) {
             if (i === 0 && j < firstDayOfMonth - 1) {
                 tableHTML += '<td class="disabled"><i class="fas fa-times"></i></td>';
             } else if (day <= daysInMonth) {
+                //make a variable date to hold the date of the cell using month to create but change the day to the current day
+                let date = new Date(monthToCreate);
+                date.setDate(day);
+
                 //if the day is today, add the class today
                 if(day === currentDate.getDate() && month.getMonth() === currentDate.getMonth() && month.getFullYear() === currentDate.getFullYear()){
-                    tableHTML += `<td month="${month.getMonth()+1}" class="today">${day}</td>`;
+                    tableHTML += `<td date="${date}" class="today">${day}</td>`;
                 }else {
-                    tableHTML += `<td month="${month.getMonth()+1}">${day}</td>`;
+                    tableHTML += `<td date="${date}">${day}</td>`;
                 }
 
                 day++;
