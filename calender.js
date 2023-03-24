@@ -1,9 +1,42 @@
-window.onload = init;
+const calenderInput = document.getElementById('range-input');
+let isCalendarOpen = false;
 
-function init(){
+let firstClickedDate = null;
+let secondClickedDate = null;
+let table = null;
+let tableBody = null;
+let tableCells = null;
+
+//adds a listener to the document that will close the calendar when the user clicks outside of it
+document.addEventListener('click', function (event) {
+    if(event.target.id === 'range-input' && isCalendarOpen === false){
+        let calendarWrapper = document.createElement('div');
+        calendarWrapper.id = 'calendar-wrapper';
+
+        calenderInput.after(calendarWrapper);
+        init(calendarWrapper);
+        isCalendarOpen = true;
+        console.log('Calendar opened');
+
+    } else {
+
+        if(isCalendarOpen && !event.target.closest('#calendar-wrapper')){
+            //remove div with id calendar-wrapper
+            let currentCalendarWrapper = document.getElementById('calendar-wrapper');
+            currentCalendarWrapper.remove();
+            isCalendarOpen = false;
+            console.log('Calendar closed');
+
+            if(firstClickedDate && secondClickedDate){
+                calenderInput.value = `${firstClickedDate.innerHTML} - ${secondClickedDate.innerHTML}`;
+            }
+        }
+    }
+});
+
+
+function init(divRoot){
     let currentDate = new Date();
-
-    let divRoot = document.getElementById('calendar-wrapper');
 
     let headerButtons = createHeader(currentDate);
     divRoot.appendChild(headerButtons);
@@ -19,12 +52,6 @@ function init(){
     addEventCellsListeners(tableCells);
     addHeaderButtonsListeners(headerButtons, calendar);
 }
-
-let firstClickedDate = null;
-let secondClickedDate = null;
-let table = null;
-let tableBody = null;
-let tableCells = null;
 
 function createHeader(currentDate) {
     const headerButtons = document.createElement("div");
@@ -118,9 +145,9 @@ function createMonth(monthToCreate, calendarWrapper) {
             } else if (day <= daysInMonth) {
                 //if the day is today, add the class today
                 if(day === currentDate.getDate() && month.getMonth() === currentDate.getMonth() && month.getFullYear() === currentDate.getFullYear()){
-                    tableHTML += `<td class="today">${day}</td>`;
+                    tableHTML += `<td month="${month.getMonth()+1}" class="today">${day}</td>`;
                 }else {
-                    tableHTML += `<td>${day}</td>`;
+                    tableHTML += `<td month="${month.getMonth()+1}">${day}</td>`;
                 }
 
                 day++;
