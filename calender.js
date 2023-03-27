@@ -19,7 +19,7 @@ function toggleCalendarVisibility(event){
         calenderInput.after(calendarWrapper);
         init(calendarWrapper);
         isCalendarOpen = true;
-        console.log('Calendar opened');
+        // console.log('Calendar opened');
         return;
     }
 
@@ -28,7 +28,7 @@ function toggleCalendarVisibility(event){
         let currentCalendarWrapper = document.getElementById('calendar-wrapper');
         currentCalendarWrapper.remove();
         isCalendarOpen = false;
-        console.log('Calendar closed');
+        // console.log('Calendar closed');
 
         setValuesToInput();
     }
@@ -146,7 +146,6 @@ function handleHeaderButton(button, monthYearDiv, calendar, direction) {
     createMonth(newDate.toDateString(), calendar);
     tableCells = getTableCells(calendar);
     addEventCellsListeners(tableCells);
-    console.log(firstClickedDate);
 }
 
 function getTableCells(calendar) {
@@ -156,7 +155,6 @@ function getTableCells(calendar) {
 }
 
 function createMonth(monthToCreate, calendarWrapper) {
-    console.log(monthToCreate);
     const currentDate = new Date();
     const month = new Date(monthToCreate);
     const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
@@ -249,7 +247,6 @@ function removeEventCellsListeners(tableCells){
 
 function handleFirstClickedDate(cell) {
     firstClickedDate = cell;
-    console.log(firstClickedDate);
     cell.classList.add('start-date');
     cell.classList.add('selected');
 }
@@ -259,49 +256,11 @@ function handleSecondClickedDate(cell) {
         clearAllCells();
     } else {
         secondClickedDate = cell;
-        console.log(secondClickedDate);
         secondClickedDate.classList.add('end-date');
         secondClickedDate.classList.remove('selected');
         highlightCellsBetween(firstClickedDate, secondClickedDate);
     }
 }
-
-// function handleThirdClickedDate(cell) {
-//     if (cell.classList.contains('selected')) {
-//         if (cell.classList.contains('start-date') || cell.classList.contains('end-date')) {
-//             clearAllCells();
-//             return;
-//         }
-//
-//         deselectFromCellToCell(cell, secondClickedDate);
-//         secondClickedDate.classList.remove('end-date');
-//         console.log(secondClickedDate.classList);
-//         secondClickedDate = cell;
-//         secondClickedDate.classList.add('end-date');
-//         secondClickedDate.classList.remove('selected');
-//         console.log(secondClickedDate);
-//         highlightCellsBetween(firstClickedDate, secondClickedDate);
-//     } else {
-//         if (getDateFromCell(cell) > getDateFromCell(secondClickedDate)) {
-//             secondClickedDate.classList.remove('end-date');
-//             highlightCellsBetween(secondClickedDate, cell);
-//             secondClickedDate = cell;
-//             secondClickedDate.classList.add('end-date');
-//             console.log(secondClickedDate);
-//
-//         } else if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
-//             clearAllCells();
-//             handleFirstClickedDate(cell);
-//
-//         } else {
-//             deselectFromCellToCell(firstClickedDate, cell);
-//             firstClickedDate.classList.remove('start-date');
-//             firstClickedDate = cell;
-//             firstClickedDate.classList.add('start-date');
-//             console.log(firstClickedDate);
-//         }
-//     }
-// }
 
 function handleThirdClickedDate(cell) {
     if (cell.classList.contains('selected')) {
@@ -367,11 +326,6 @@ function addStartDateClassToFirstClickedDate() {
 }
 
 function highlightCellsBetween(firstDate, secondDate) {
-    // const firstDateIndex = getCellIndex(firstDate);
-    // const secondDateIndex = getCellIndex(secondDate);
-    // for (let i = Math.min(firstDateIndex, secondDateIndex); i <= Math.max(firstDateIndex, secondDateIndex); i++) {
-    //     tableCells[i].classList.add('selected');
-    // }
 
     const firDate = getDateFromCell(firstDate);
     const secDate = getDateFromCell(secondDate);
@@ -393,9 +347,6 @@ function clearAllCells() {
     });
     firstClickedDate = null;
     secondClickedDate = null;
-    console.log("Clearing first and second clicked date:");
-    console.log(firstClickedDate);
-    console.log(secondClickedDate);
 }
 
 function getCellIndex(cell) {
@@ -403,11 +354,6 @@ function getCellIndex(cell) {
 }
 
 function deselectFromCellToCell(startCell, endCell) {
-    // const startIndex = getCellIndex(startCell) + 1;
-    // const endIndex = getCellIndex(endCell);
-    // for (let i = startIndex; i <= endIndex; i++) {
-    //     tableCells[i].classList.remove('selected');
-    // }
 
     const startDate = getDateFromCell(startCell);
     const endDate = getDateFromCell(endCell);
