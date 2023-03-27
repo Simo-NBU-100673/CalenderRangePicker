@@ -7,8 +7,11 @@ let table = null;
 let tableBody = null;
 let tableCells = null;
 
-//adds a listener to the document that will close the calendar when the user clicks outside of it
-document.addEventListener('click', function (event) {
+//adds a listener to the document that will close the calendar when the user clicks outside of it and will set the values of the input field
+//if the calendar is not open, it will open the calendar
+document.addEventListener('click', toggleCalendarVisibility);
+
+function toggleCalendarVisibility(event){
     if(event.target.id === 'range-input' && isCalendarOpen === false){
         let calendarWrapper = document.createElement('div');
         calendarWrapper.id = 'calendar-wrapper';
@@ -17,45 +20,41 @@ document.addEventListener('click', function (event) {
         init(calendarWrapper);
         isCalendarOpen = true;
         console.log('Calendar opened');
-
-    } else {
-
-        if(isCalendarOpen && !event.target.closest('#calendar-wrapper')){
-            //remove div with id calendar-wrapper
-            let currentCalendarWrapper = document.getElementById('calendar-wrapper');
-            currentCalendarWrapper.remove();
-            isCalendarOpen = false;
-            console.log('Calendar closed');
-
-            setValuesToInput();
-        }
+        return;
     }
-});
 
-function setValuesToInput(){
-    if(firstClickedDate && secondClickedDate){
-        //make the date to be in format DD/MM/YYYY and the set the value of the input field to be the two dates separated by a dash
-        calenderInput.value = `${getDateFromCell(firstClickedDate)} - ${getDateFromCell(secondClickedDate)}`;
+    if(isCalendarOpen && !event.target.closest('#calendar-wrapper')){
+        //remove div with id calendar-wrapper
+        let currentCalendarWrapper = document.getElementById('calendar-wrapper');
+        currentCalendarWrapper.remove();
+        isCalendarOpen = false;
+        console.log('Calendar closed');
 
-    } else if(firstClickedDate){
-        calenderInput.value = firstClickedDate;
-
-    } else {
-        calenderInput.value = '';
+        setValuesToInput();
     }
 }
 
-function getDateFromCell(cell){
+function setValuesToInput(){
+    if(firstClickedDate && secondClickedDate){
+        //makes the date to be in format DD/MM/YYYY and the set the value of the input field to be the two dates separated by a dash
+        calenderInput.value = `${getDateStringFromCell(firstClickedDate)} - ${getDateStringFromCell(secondClickedDate)}`;
+        return;
+    }
+
+    if(firstClickedDate){
+        calenderInput.value = getDateStringFromCell(firstClickedDate);
+    }
+}
+
+function getDateStringFromCell(cell){
     let cellDate = cell.getAttribute('date');
     const today = new Date(cellDate);
     const day = today.getDate().toString().padStart(2, '0'); // padStart ensures 2 digits
     const month = (today.getMonth() + 1).toString().padStart(2, '0'); // add 1 to get 1-12 range
     const year = today.getFullYear().toString();
 
-    const dateStr = `${day}/${month}/${year}`;
-    console.log(dateStr); // logs the date in "DD/MM/YYYY" format
-
-    return dateStr;
+    // date in "DD/MM/YYYY" format
+    return `${day}/${month}/${year}`;
 }
 
 function init(divRoot){
