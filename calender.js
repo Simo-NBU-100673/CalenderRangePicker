@@ -57,6 +57,11 @@ function getDateStringFromCell(cell){
     return `${day}/${month}/${year}`;
 }
 
+function getDateFromCell(cell){
+    let cellDate = cell.getAttribute('date');
+    return new Date(cellDate);
+}
+
 function init(divRoot){
     let currentDate = new Date();
 
@@ -166,17 +171,7 @@ function createMonth(monthToCreate, calendarWrapper) {
             if (i === 0 && j < firstDayOfMonth - 1) {
                 tableHTML += '<td class="disabled"><i class="fas fa-times"></i></td>';
             } else if (day <= daysInMonth) {
-                //make a variable date to hold the date of the cell using month to create but change the day to the current day
-                let date = new Date(monthToCreate);
-                date.setDate(day);
-
-                //if the day is today, add the class today
-                if(day === currentDate.getDate() && month.getMonth() === currentDate.getMonth() && month.getFullYear() === currentDate.getFullYear()){
-                    tableHTML += `<td date="${date}" class="today">${day}</td>`;
-                }else {
-                    tableHTML += `<td date="${date}">${day}</td>`;
-                }
-
+                tableHTML += createTableCell(day, month, currentDate);
                 day++;
             } else {
                 tableHTML += '<td class="disabled"><i class="fas fa-times"></i></td>';
@@ -187,6 +182,37 @@ function createMonth(monthToCreate, calendarWrapper) {
 
     tableHTML += '</tbody></table>';
     calendarWrapper.innerHTML = tableHTML;
+}
+
+function createTableCell(day, month, currentDate) {
+    let date = new Date(month);
+    date.setDate(day);
+
+    return `<td date="${date}" class="${getClassList(day, month, date, currentDate)}">${day}</td>`;
+}
+
+function getClassList(day, month, date, currentDate) {
+    //make an array of string
+    let classList = [];
+    if (day === currentDate.getDate() && month.getMonth() === currentDate.getMonth() && month.getFullYear() === currentDate.getFullYear()) {
+        classList.push("today");
+    }
+
+    if (firstClickedDate !== null && getDateFromCell(firstClickedDate).getTime() === date.getTime()) {
+        classList.push("selected start-date");
+    }
+
+    if (secondClickedDate !== null && getDateFromCell(secondClickedDate).getTime() === date.getTime()) {
+        classList.push("selected end-date");
+    }
+
+    if(firstClickedDate !== null && secondClickedDate !== null) {
+        if (date.getTime() > getDateFromCell(firstClickedDate).getTime() && date.getTime() < getDateFromCell(secondClickedDate).getTime()) {
+            classList.push("selected");
+        }
+    }
+
+    return classList.join(" ");
 }
 
 function addEventCellsListeners(tableCells){
@@ -229,7 +255,7 @@ function handleFirstClickedDate(cell) {
 }
 
 function handleSecondClickedDate(cell) {
-    if (getCellIndex(cell) < getCellIndex(firstClickedDate)) {
+    if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
         clearAllCells();
     } else {
         secondClickedDate = cell;
@@ -240,48 +266,125 @@ function handleSecondClickedDate(cell) {
     }
 }
 
+// function handleThirdClickedDate(cell) {
+//     if (cell.classList.contains('selected')) {
+//         if (cell.classList.contains('start-date') || cell.classList.contains('end-date')) {
+//             clearAllCells();
+//             return;
+//         }
+//
+//         deselectFromCellToCell(cell, secondClickedDate);
+//         secondClickedDate.classList.remove('end-date');
+//         console.log(secondClickedDate.classList);
+//         secondClickedDate = cell;
+//         secondClickedDate.classList.add('end-date');
+//         secondClickedDate.classList.remove('selected');
+//         console.log(secondClickedDate);
+//         highlightCellsBetween(firstClickedDate, secondClickedDate);
+//     } else {
+//         if (getDateFromCell(cell) > getDateFromCell(secondClickedDate)) {
+//             secondClickedDate.classList.remove('end-date');
+//             highlightCellsBetween(secondClickedDate, cell);
+//             secondClickedDate = cell;
+//             secondClickedDate.classList.add('end-date');
+//             console.log(secondClickedDate);
+//
+//         } else if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
+//             clearAllCells();
+//             handleFirstClickedDate(cell);
+//
+//         } else {
+//             deselectFromCellToCell(firstClickedDate, cell);
+//             firstClickedDate.classList.remove('start-date');
+//             firstClickedDate = cell;
+//             firstClickedDate.classList.add('start-date');
+//             console.log(firstClickedDate);
+//         }
+//     }
+// }
+
 function handleThirdClickedDate(cell) {
     if (cell.classList.contains('selected')) {
-        if (cell.classList.contains('start-date') || cell.classList.contains('end-date')) {
-            clearAllCells();
-            return;
-        }
+        handleSelectedThirdClick(cell);
+        return;
+    }
 
-        deselectFromCellToCell(cell, secondClickedDate);
-        secondClickedDate.classList.remove('end-date');
+    handleUnselectedThirdClick(cell);
+}
+
+function handleSelectedThirdClick(cell) {
+    if (cell.classList.contains('start-date') || cell.classList.contains('end-date')) {
+        clearAllCells();
+        return;
+    }
+
+    deselectFromCellToCell(cell, secondClickedDate);
+    removeEndDateClassFromSecondClickedDate();
+    secondClickedDate = cell;
+    addEndDateClassToSecondClickedDate();
+    secondClickedDate.classList.remove('selected');
+    highlightCellsBetween(firstClickedDate, secondClickedDate);
+}
+
+function handleUnselectedThirdClick(cell) {
+    if (getDateFromCell(cell) > getDateFromCell(secondClickedDate)) {
+        removeEndDateClassFromSecondClickedDate();
+        highlightCellsBetween(secondClickedDate, cell);
         secondClickedDate = cell;
-        secondClickedDate.classList.add('end-date');
-        secondClickedDate.classList.remove('selected');
-        console.log(secondClickedDate);
-        highlightCellsBetween(firstClickedDate, secondClickedDate);
+        addEndDateClassToSecondClickedDate();
+
+    } else if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
+        clearAllCells();
+        handleFirstClickedDate(cell);
+
     } else {
-        if (getCellIndex(cell) > getCellIndex(secondClickedDate)) {
-            secondClickedDate.classList.remove('end-date');
-            highlightCellsBetween(secondClickedDate, cell);
-            secondClickedDate = cell;
-            secondClickedDate.classList.add('end-date');
-            console.log(secondClickedDate);
-
-        } else if (getCellIndex(cell) < getCellIndex(firstClickedDate)) {
-            clearAllCells();
-            handleFirstClickedDate(cell);
-
-        } else {
-            deselectFromCellToCell(firstClickedDate, cell);
-            firstClickedDate.classList.remove('start-date');
-            firstClickedDate = cell;
-            firstClickedDate.classList.add('start-date');
-            console.log(firstClickedDate);
-        }
+        deselectFromCellToCell(firstClickedDate, cell);
+        removeStartDateClassFromFirstClickedDate();
+        firstClickedDate = cell;
+        addStartDateClassToFirstClickedDate();
     }
 }
 
-function highlightCellsBetween(firstDate, secondDate) {
-    const firstDateIndex = getCellIndex(firstDate);
-    const secondDateIndex = getCellIndex(secondDate);
-    for (let i = Math.min(firstDateIndex, secondDateIndex); i <= Math.max(firstDateIndex, secondDateIndex); i++) {
-        tableCells[i].classList.add('selected');
+function removeEndDateClassFromSecondClickedDate() {
+    //get elements with class end-date and remove it
+    let elements = document.getElementsByClassName('end-date');
+    while(elements.length > 0){
+        elements[0].classList.remove('end-date');
     }
+    // secondClickedDate.classList.remove('end-date');
+}
+
+function addEndDateClassToSecondClickedDate() {
+    secondClickedDate.classList.add('end-date');
+}
+
+function removeStartDateClassFromFirstClickedDate() {
+    firstClickedDate.classList.remove('start-date');
+}
+
+function addStartDateClassToFirstClickedDate() {
+    firstClickedDate.classList.add('start-date');
+}
+
+function highlightCellsBetween(firstDate, secondDate) {
+    // const firstDateIndex = getCellIndex(firstDate);
+    // const secondDateIndex = getCellIndex(secondDate);
+    // for (let i = Math.min(firstDateIndex, secondDateIndex); i <= Math.max(firstDateIndex, secondDateIndex); i++) {
+    //     tableCells[i].classList.add('selected');
+    // }
+
+    const firDate = getDateFromCell(firstDate);
+    const secDate = getDateFromCell(secondDate);
+    //get all the cells between the first and second date
+    const cellsBetween = (Array.from(tableCells)).filter(function (cell) {
+        let cellDate = getDateFromCell(cell);
+        return cellDate >= firDate && cellDate <= secDate;
+    });
+
+    //add the selected class to all the cells between the first and second date
+    cellsBetween.forEach(function (cell) {
+        cell.classList.add('selected');
+    });
 }
 
 function clearAllCells() {
@@ -300,9 +403,21 @@ function getCellIndex(cell) {
 }
 
 function deselectFromCellToCell(startCell, endCell) {
-    const startIndex = getCellIndex(startCell) + 1;
-    const endIndex = getCellIndex(endCell);
-    for (let i = startIndex; i <= endIndex; i++) {
-        tableCells[i].classList.remove('selected');
-    }
+    // const startIndex = getCellIndex(startCell) + 1;
+    // const endIndex = getCellIndex(endCell);
+    // for (let i = startIndex; i <= endIndex; i++) {
+    //     tableCells[i].classList.remove('selected');
+    // }
+
+    const startDate = getDateFromCell(startCell);
+    const endDate = getDateFromCell(endCell);
+
+    const cellsBetween = (Array.from(tableCells)).filter(function (cell) {
+        let cellDate = getDateFromCell(cell);
+        return cellDate >= startDate && cellDate <= endDate;
+    });
+
+    cellsBetween.forEach(function (cell) {
+        cell.classList.remove('selected');
+    });
 }
