@@ -137,7 +137,7 @@ function addHeaderButtonsListeners(headerButtons, calendar) {
 
 function handleHeaderButton(button, monthYearDiv, calendar, direction) {
     removeEventCellsListeners(tableCells);
-    // clearAllCells();
+    // clearRangeInput();
 
     const [month, year] = monthYearDiv.innerHTML.split(" ");
     const newDate = new Date(`${month} 1, ${year}`);
@@ -254,7 +254,7 @@ function handleFirstClickedDate(cell) {
 
 function handleSecondClickedDate(cell) {
     if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
-        clearAllCells();
+        clearRangeInput();
     } else {
         secondClickedDate = cell;
         secondClickedDate.classList.add('end-date');
@@ -274,7 +274,7 @@ function handleThirdClickedDate(cell) {
 
 function handleSelectedThirdClick(cell) {
     if (cell.classList.contains('start-date') || cell.classList.contains('end-date')) {
-        clearAllCells();
+        clearRangeInput();
         return;
     }
 
@@ -294,7 +294,7 @@ function handleUnselectedThirdClick(cell) {
         addEndDateClassToSecondClickedDate();
 
     } else if (getDateFromCell(cell) < getDateFromCell(firstClickedDate)) {
-        clearAllCells();
+        clearRangeInput();
         handleFirstClickedDate(cell);
 
     } else {
@@ -342,12 +342,21 @@ function highlightCellsBetween(firstDate, secondDate) {
     });
 }
 
-function clearAllCells() {
+function clearRangeInput() {
+    clearAllCells();
+    clearValueInInput();
+}
+
+function clearAllCells(){
     tableCells.forEach(function (cell) {
         cell.classList.remove('selected', 'start-date', 'end-date');
     });
     firstClickedDate = null;
     secondClickedDate = null;
+}
+
+function clearValueInInput(){
+    calenderInput.value='';
 }
 
 function getCellIndex(cell) {
