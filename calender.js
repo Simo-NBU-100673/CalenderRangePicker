@@ -1,5 +1,5 @@
 const calenderInput = document.getElementById('range-input');
-let isCalendarOpen = false;
+let isCalendarOpen= false;
 
 let firstClickedDate = null;
 let secondClickedDate = null;
@@ -34,19 +34,19 @@ function toggleCalendarVisibility(event){
     }
 }
 
-function setValuesToInput(){
-    if(firstClickedDate && secondClickedDate){
+function setValuesToInput() {
+    if (firstClickedDate && secondClickedDate) {
         //makes the date to be in format DD/MM/YYYY and the set the value of the input field to be the two dates separated by a dash
         calenderInput.value = `${getDateStringFromCell(firstClickedDate)} - ${getDateStringFromCell(secondClickedDate)}`;
         return;
     }
 
-    if(firstClickedDate){
+    if (firstClickedDate) {
         calenderInput.value = getDateStringFromCell(firstClickedDate);
     }
 }
 
-function getDateStringFromCell(cell){
+function getDateStringFromCell(cell) {
     let cellDate = cell.getAttribute('date');
     const today = new Date(cellDate);
     const day = today.getDate().toString().padStart(2, '0'); // padStart ensures 2 digits
@@ -57,12 +57,12 @@ function getDateStringFromCell(cell){
     return `${day}/${month}/${year}`;
 }
 
-function getDateFromCell(cell){
+function getDateFromCell(cell) {
     let cellDate = cell.getAttribute('date');
     return new Date(cellDate);
 }
 
-function init(divRoot){
+function init(divRoot) {
     let currentDate = new Date();
 
     let headerButtons = createHeader(currentDate);
@@ -119,7 +119,7 @@ function getMonthYearString(date) {
     return `${monthName} ${year}`;
 }
 
-function getMonthName(monthIndex){
+function getMonthName(monthIndex) {
     let monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
@@ -204,7 +204,7 @@ function getClassList(day, month, date, currentDate) {
         classList.push("selected end-date");
     }
 
-    if(firstClickedDate !== null && secondClickedDate !== null) {
+    if (firstClickedDate !== null && secondClickedDate !== null) {
         if (date.getTime() > getDateFromCell(firstClickedDate).getTime() && date.getTime() < getDateFromCell(secondClickedDate).getTime()) {
             classList.push("selected");
         }
@@ -213,9 +213,9 @@ function getClassList(day, month, date, currentDate) {
     return classList.join(" ");
 }
 
-function addEventCellsListeners(tableCells){
+function addEventCellsListeners(tableCells) {
     tableCells.forEach(function (cell) {
-        if(!cell.classList.contains('disabled')){
+        if (!cell.classList.contains('disabled')) {
             cell.addEventListener('click', function () {
                 if (firstClickedDate === null) {
                     handleFirstClickedDate(cell);
@@ -224,14 +224,15 @@ function addEventCellsListeners(tableCells){
                 } else {
                     handleThirdClickedDate(cell);
                 }
+                setValuesToInput();
             });
         }
     });
 }
 
-function removeEventCellsListeners(tableCells){
+function removeEventCellsListeners(tableCells) {
     tableCells.forEach(function (cell) {
-        if(!cell.classList.contains('disabled')){
+        if (!cell.classList.contains('disabled')) {
             cell.removeEventListener('click', function () {
                 if (firstClickedDate === null) {
                     handleFirstClickedDate(cell);
@@ -307,7 +308,7 @@ function handleUnselectedThirdClick(cell) {
 function removeEndDateClassFromSecondClickedDate() {
     //get elements with class end-date and remove it
     let elements = document.getElementsByClassName('end-date');
-    while(elements.length > 0){
+    while (elements.length > 0) {
         elements[0].classList.remove('end-date');
     }
     // secondClickedDate.classList.remove('end-date');
