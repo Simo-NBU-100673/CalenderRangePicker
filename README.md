@@ -4,9 +4,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Simo-NBU-100673/CalenderRangePicker)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Simo-NBU-100673/CalenderRangePicker)
 
-
-
-
 <img src="https://user-images.githubusercontent.com/81335974/264511131-d8c1e05c-7306-4b53-9c90-cd0aa4aa0c10.gif">
 
 ### Description
