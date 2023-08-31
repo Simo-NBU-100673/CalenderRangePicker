@@ -8,8 +8,8 @@
 
 
 ### Features
-Single date selection
-Input validation(the end date can not be before the start date)
-Making the range shorter of longer
-Range picking from different months and years
-Showing which date of the week is for every date
+- Single date selection
+- Input validation(the end date can not be before the start date)
+- Making the range shorter of longer
+- Range picking from different months and years
+- Showing which date of the week is for every date
