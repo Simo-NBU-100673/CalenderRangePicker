@@ -1,4 +1,4 @@
-# CalenderRangePicker
+# CalenderRangePicker 🗓️
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Simo-NBU-100673/CalenderRangePicker)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Simo-NBU-100673/CalenderRangePicker?label=latest-release)
 ![GitHub repo size](https://img.shields.io/github/repo-size/Simo-NBU-100673/CalenderRangePicker)
