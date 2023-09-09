@@ -1,5 +1,6 @@
 # CalenderRangePicker 🗓️
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Simo-NBU-100673/CalenderRangePicker)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Simo-NBU-100673/CalenderRangePicker?label=latest-release)
 ![GitHub repo size](https://img.shields.io/github/repo-size/Simo-NBU-100673/CalenderRangePicker)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Simo-NBU-100673/CalenderRangePicker)
